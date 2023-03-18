@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_fultter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_fultter/screen/signup_screen.dart';
 import 'package:instagram_fultter/utils/colors.dart';
 import 'package:instagram_fultter/widgets/text_field_input.dart';
 
@@ -55,16 +57,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 isPass: true,
               ),
               const SizedBox(height: 24,),
-              Container(
-                alignment: Alignment.center ,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: blueColor,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Text('Log in'),
+              InkWell(
+                child: Container(
+                  alignment: Alignment.center ,
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: blueColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text('Log in'),
             ),
+              ),
               const SizedBox(
               height: 12,
             ),
@@ -78,13 +82,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                  Container(
-                    child: const Text(
-                        "Sign up",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                        builder: (context) => SignupScreen(),
+                          // fullscreenDialog: true
+                      ),
+                    );
 
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Text(
+                          "Sign up",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+
+                    ),
                   )
                 ],
               ),
