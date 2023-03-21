@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_fultter/resources/auth_methods.dart';
 import 'package:instagram_fultter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_fultter/responsive/responsive_layout_screen.dart';
+import 'package:instagram_fultter/responsive/web_screen_layout.dart';
+import 'package:instagram_fultter/screen/login_screen.dart';
 import 'package:instagram_fultter/utils/colors.dart';
 import 'package:instagram_fultter/widgets/text_field_input.dart';
 
@@ -65,8 +68,23 @@ class _SignupScreenState extends State<SignupScreen> {
       // ignore: use_build_context_synchronously
       showSnackBar(res, context);
     } else {
-      //
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
+        ),
+      );
     }
+  }
+
+  void signToLogin() {
+    Navigator.of(context).pop(
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
   }
 
   @override
@@ -105,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       : const CircleAvatar(
                           radius: 64,
                           backgroundImage: NetworkImage(
-                              'https://i.pinimg.com/236x/df/1c/26/df1c26fc2ba7fae6d6e5b12ab1e1355c.jpg'),
+                              'https://images.unsplash.com/photo-1628563694622-5a76957fd09c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDExfHx8ZW58MHx8fHw%3D&w=1000&q=80'),
                         ),
                   Positioned(
                     left: 80,
@@ -182,18 +200,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: const Text("Don't have an acount?"),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MobileScreenLayout(),
-                            fullscreenDialog: true),
-                      );
-                    },
+                    onTap: signToLogin,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
-                        "Sign up",
+                        "Log in",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
