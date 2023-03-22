@@ -1,6 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_fultter/providers/user_provider.dart';
 import 'package:instagram_fultter/utils/colors.dart';
+import 'package:instagram_fultter/utils/utils.dart';
+import 'package:provider/provider.dart';
+
+import '../models/user.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({Key? key}) : super(key: key);
@@ -10,21 +17,69 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  //언제 들어올지 모르는 파일
+  Uint8List? _file;
+  final TextEditingController _descriptionController = TextEditingController();
+
+  //언제 선택될지 모르는 카메라,갤러리 등
+  _selectImage(BuildContext context) async {
+    return showDialog(context: context, builder: (context) {
+      //다이어로그 흰색화면.
+      return SimpleDialog(
+        title: const Text("Create a Post"),
+        children: [
+          SimpleDialogOption(
+            padding: const EdgeInsets.all(20),
+            child: Text("take a photo"),
+            onPressed: () async{
+              Navigator.of(context).pop();
+              Uint8List file = await pickImage(ImageSource.camera,);
+              setState(() {
+                _file = file;
+              });
+            },
+          ),
+          SimpleDialogOption(
+            padding: const EdgeInsets.all(20),
+            child: Text("Choose from Gallery"),
+            onPressed: () async{
+              Navigator.of(context).pop();
+              Uint8List file = await pickImage(ImageSource.gallery,);
+              setState(() {
+                _file = file;
+              });
+            },
+          ),
+          SimpleDialogOption(
+            padding: const EdgeInsets.all(20),
+            child: Text("Cancel"),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          )
+
+        ],
+      );
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-/*
-    return Center(
+
+    final User user = Provider.of<UserProvider>(context).getUser;
+
+    return _file == null? Center(
       child: IconButton(
         icon: Icon(Icons.upload),
-        onPressed: (){},
+        onPressed: ()=>_selectImage(context),
       ),
-    );
-*/
-  return Scaffold(
+    ):
+  Scaffold(
     appBar: AppBar(
       backgroundColor: mobileBackgroundColor,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
         onPressed: (){},
       ),
       title: const Text('Post to'),
@@ -49,11 +104,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CircleAvatar(
-              backgroundImage: NetworkImage("https://images.unsplash.com/photo-1679311994617-c3c9dbe09d01?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"),
+            CircleAvatar(
+              backgroundImage: NetworkImage(user.photoUrl,),
             ),
             SizedBox(width: MediaQuery.of(context).size.width*.4,
-            child: const TextField(
+            child: TextField(
+              controller: _descriptionController,
               decoration:InputDecoration(
                 hintText: "Write a caption...",
                 border: InputBorder.none
@@ -66,9 +122,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
               child: AspectRatio(
                 aspectRatio: 487/451,
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1679311994617-c3c9dbe09d01?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"),
+                      image: MemoryImage(_file!),
                       fit: BoxFit.fill,
                       alignment: FractionalOffset.topCenter,
                     )
